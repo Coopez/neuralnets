@@ -19,28 +19,49 @@ def gen_data(P,N):
     return data
 
 def loc_potential(w,e):
-    return np.dot(w,e*w[-1])
+    return np.dot(w,e[0:-2]*e[-1])
 
 class Perceptron:
+    
     def __init__(self,size,n_data):
         self.P = n_data
         self.N = size
         self.weights = [0 for i in range(0,self.N)] # init weights as 0
         self.train_data = gen_data(self.P,self.N)
-    def training(self,epochs):
-        for n in range(0,epochs):
-            for example in range(0,self.P): # exersice says 1 to P, but since this is index, I would start at 0
-                pass
-                # Here update perceptron function
+    
     def rosenblatt(self,example):
-        if loc_potential(self.weights[example],self.train_data[example]) <= 0:
-            pass
-        
-        return self.weights
+        if loc_potential(self.weights,self.train_data[example]) <= 0:
+            self.weights = self.weights + (self.train_data[example][0:-2]*self.train_data[example][-1])/self.N
+            return 1
+        return 0
+    
+    def training(self,epochs):
+        n = 0
+        while  n  < epochs:
+            E_sum = 0
+            for example in range(0,self.P): # exersice says 1 to P, but since this is index, I would start at 0
+                E_sum += self.rosenblatt(example)           
+                if E_sum == self.P:
+                    return "success"
+        return "reached_nmax"
 
-
-
-
+def main():
+    #Experiments:
+    nD =  50 
+    nmax = 100
+    N = 20
+    alpha = [0.75+0.25*i for i in range(0,10)]
+    P = alpha *N
+    results = []
+    for p in P: # do experiment for each P
+        suc_sum = 0
+        dt_set = 0
+        while dt_set < nD:
+            model = Perceptron(p,N)
+            if model.training(nmax)  == "success":
+               suc_sum +=1
+            dt_set += 1
+        results.append(suc_sum / nD)
 
 
 
