@@ -1,5 +1,8 @@
 import numpy as np
-
+import seaborn as sns
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.colors as col
 # Code for assignment 1:
 # Rosenblatt Perceptron
 # Authors: Sebastian Prehn & Niklas Erdmann, 11.2020
@@ -42,35 +45,75 @@ class Perceptron:
             n+=1
         return "reached_nmax",n-1
 
+
+def plot_results(results,alpha,P,N):
+    N_Group = []
+    for n in N:
+        temp = [n for i in range(0,10)]
+        N_Group += temp
+    N_Alpha = []
+    for i in range(0,len(N)):
+        N_Alpha += alpha
+    data_unified = {'Probability of Success':results,'N/P':N_Alpha, 'N':N_Group}
+    data = pd.DataFrame(data_unified)
+    sns.set_style("darkgrid") # ticks or whitegrid darkgrid
+    # palette options: flare mako_r Set2 Set1 Set3
+    sns.lineplot(data=data, x='N/P', y='Probability of Success', hue = 'N',style='N',palette="Set1",hue_norm=col.LogNorm())
+    plt.show()
+
+
 def main():
 
     #######################
     ## Experiment Settings:
     nD =  50  # Number of Experiment runs
     nmax = 100 # Maximal Epochs per Experiment
-    N = 20 # size of each Sample instance
+    N = [10,20,100]#20 # size of each Sample instance
     print_avgEpochs = True # if True will print out mean epochs to reach results for each P.
     #######################
+    results_overN = []
+    Ps = []
+    for n in N:
+        alpha = [0.75+0.25*i for i in range(0,10)]
+        P = [int(a*n) for a in alpha]
+        results = []
+        epochs = []
+        for p in P: # do experiment for each item in P
+            suc_sum = 0
+            dt_set = 0
+            e = 0
+            while dt_set < nD: 
+                model = Perceptron(n,p)
+                train, epoch = model.training(nmax)
+                e += epoch 
+                if train  == "success":   
+                    suc_sum +=1
+                dt_set += 1
+            results.append(suc_sum / nD)
+            epochs.append(e/nD)
+        print("Results: " + str(results))
+        results_overN += results
+        if print_avgEpochs:
+            print("Average number of Epochs for each P: "+ str(epochs))
+        Ps += P
+    plot_results(results_overN,alpha,P,N)
 
+def only_plot():
+    N = [10,20,100]
     alpha = [0.75+0.25*i for i in range(0,10)]
-    P = [int(a*N) for a in alpha]
-    results = []
-    epochs = []
-    for p in P: # do experiment for each item in P
-        suc_sum = 0
-        dt_set = 0
-        e = 0
-        while dt_set < nD: 
-            model = Perceptron(N,p)
-            train, epoch = model.training(nmax)
-            e += epoch 
-            if train  == "success":   
-                suc_sum +=1
-            dt_set += 1
-        results.append(suc_sum / nD)
-        epochs.append(e/nD)
-    print("Results: " + str(results))
-    if print_avgEpochs:
-        print("Average number of Epochs for each P: "+ str(epochs))
+    P = []
+    P = [int(a*N[0]) for a in alpha]
+    results = [1.0, 1.0, 1.0, 0.84, 0.72, 0.46, 0.36, 0.22, 0.12, 0.06] + [1.0, 1.0, 1.0, 0.9, 0.52, 0.24, 0.12, 0.04, 0.02, 0.0] + [1.0, 1.0, 1.0, 0.9, 0.28, 0.0, 0.0, 0.0, 0.0, 0.0]
+    plot_results(results,alpha,P,N)
+    # copy paste output of previous results
+    #Results: [1.0, 1.0, 1.0, 0.84, 0.72, 0.46, 0.36, 0.22, 0.12, 0.06]
+    #Average number of Epochs for each P: [1.94, 4.2, 6.28, 27.72, 40.04, 70.54, 72.92, 86.88, 91.96, 96.24]
+    #Results: [1.0, 1.0, 1.0, 0.9, 0.52, 0.24, 0.12, 0.04, 0.02, 0.0]
+    #Average number of Epochs for each P: [3.54, 7.4, 11.24, 25.84, 65.22, 84.32, 96.36, 97.04, 99.28, 100.0]
+    #Results: [1.0, 1.0, 1.0, 0.9, 0.28, 0.0, 0.0, 0.0, 0.0, 0.0]
+    #Average number of Epochs for each P: [6.18, 10.78, 22.0, 51.72, 91.6, 100.0, 100.0, 100.0, 100.0, 100.0]
 
-main()
+
+# Functions to run
+only_plot() # Run if only wishing to plot 
+#main() # Run for the whole Perceptron Experiment
