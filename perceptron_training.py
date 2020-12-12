@@ -1,11 +1,13 @@
+# Code for assignment 1:
+# Rosenblatt Perceptron
+# Authors: Sebastian Prehn & Niklas Erdmann, 11.2020
 import numpy as np
 import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.colors as col
-# Code for assignment 1:
-# Rosenblatt Perceptron
-# Authors: Sebastian Prehn & Niklas Erdmann, 11.2020
+import sys
+import ast
 
 def gen_data(P,N):
     # P number of vectors, N dimensionality of vectors
@@ -45,7 +47,6 @@ class Perceptron:
             n+=1
         return "reached_nmax",n-1
 
-
 def plot_results(results,alpha,P,N):
     N_Group = []
     for n in N:
@@ -54,22 +55,24 @@ def plot_results(results,alpha,P,N):
     N_Alpha = []
     for i in range(0,len(N)):
         N_Alpha += alpha
-    data_unified = {'Probability of Success':results,'N/P':N_Alpha, 'N':N_Group}
+    data_unified = {'Probability of lin. Seperability':results,'N/P':N_Alpha, 'N':N_Group}
     data = pd.DataFrame(data_unified)
+    sns.set(font_scale=1.3)
     sns.set_style("darkgrid") # ticks or whitegrid darkgrid
     # palette options: flare mako_r Set2 Set1 Set3
-    sns.lineplot(data=data, x='N/P', y='Probability of Success', hue = 'N',style='N',palette="Set1",hue_norm=col.LogNorm())
+    sns.lineplot(data=data, x='N/P', y='Probability of lin. Seperability', hue = 'N',style='N',palette="Set1",hue_norm=col.LogNorm())
     plt.show()
 
-
-def main():
-
-    #######################
-    ## Experiment Settings:
-    nD =  50  # Number of Experiment runs
-    nmax = 100 # Maximal Epochs per Experiment
-    N = [10,20,100]#20 # size of each Sample instance
-    print_avgEpochs = True # if True will print out mean epochs to reach results for each P.
+def run_experiment(print_avgEpochs,*parameters):
+    if not parameters:
+        nD =  50  # Number of Experiment runs
+        nmax = 100 # Maximal Epochs per Experiment
+        N = [10,20,100] # size of each Sample instance
+    else: 
+        parameter = parameters[0] # parameters is a tuple   
+        nD =  parameter[0]  
+        nmax = parameter[1] 
+        N = parameter[2] 
     #######################
     results_overN = []
     Ps = []
@@ -103,8 +106,10 @@ def only_plot():
     alpha = [0.75+0.25*i for i in range(0,10)]
     P = []
     P = [int(a*N[0]) for a in alpha]
+    # Insert result printouts
     results = [1.0, 1.0, 1.0, 0.84, 0.72, 0.46, 0.36, 0.22, 0.12, 0.06] + [1.0, 1.0, 1.0, 0.9, 0.52, 0.24, 0.12, 0.04, 0.02, 0.0] + [1.0, 1.0, 1.0, 0.9, 0.28, 0.0, 0.0, 0.0, 0.0, 0.0]
     plot_results(results,alpha,P,N)
+    
     # copy paste output of previous results
     #Results: [1.0, 1.0, 1.0, 0.84, 0.72, 0.46, 0.36, 0.22, 0.12, 0.06]
     #Average number of Epochs for each P: [1.94, 4.2, 6.28, 27.72, 40.04, 70.54, 72.92, 86.88, 91.96, 96.24]
@@ -113,7 +118,29 @@ def only_plot():
     #Results: [1.0, 1.0, 1.0, 0.9, 0.28, 0.0, 0.0, 0.0, 0.0, 0.0]
     #Average number of Epochs for each P: [6.18, 10.78, 22.0, 51.72, 91.6, 100.0, 100.0, 100.0, 100.0, 100.0]
 
+    #nD =  500 nmax = 1000 N = [10,20,100]
+    #Results: [1.0, 1.0, 0.992, 0.938, 0.87, 0.59, 0.448, 0.214, 0.096, 0.058]
+    #Average number of Epochs for each P: [1.842, 4.476, 19.88, 91.656, 167.626, 460.6, 616.088, 822.474, 915.564, 951.272]
+    #Results: [1.0, 1.0, 1.0, 0.956, 0.78, 0.462, 0.19, 0.064, 0.014, 0.006]
+    #Average number of Epochs for each P: [3.288, 6.128, 16.214, 89.0, 304.178, 618.432, 852.636, 954.318, 989.138, 995.21]
 
-# Functions to run
-only_plot() # Run if only wishing to plot 
-#main() # Run for the whole Perceptron Experiment
+
+if __name__ == "__main__":
+    if sys.argv[1] == "run":
+        print("Running Experiment...")
+        if sys.argv[2] and sys.argv[3]:
+            parameter  = ast.literal_eval(sys.argv[2])
+            print('Input parameters are: '+ str(parameter))
+            print_avgEpochs = sys.argv[3] == "True"
+            if print_avgEpochs:
+                print("Printing Epochs enabled.")
+            else:
+                print("Printing Epochs disabled.")
+            print("=====================")
+            run_experiment(print_avgEpochs,parameter)
+        else:
+            print("Utilizing standard parameters.")
+            print_avgEpochs = True # if True will print out mean epochs to reach results for each P.
+            run_experiment(print_avgEpochs) 
+    elif sys.argv[1] == "plot":
+        only_plot()
