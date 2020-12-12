@@ -128,7 +128,7 @@ def only_plot():
 if __name__ == "__main__":
     if sys.argv[1] == "run":
         print("Running Experiment...")
-        if sys.argv[2] and sys.argv[3]:
+        if len(sys.argv) >2:
             parameter  = ast.literal_eval(sys.argv[2])
             print('Input parameters are: '+ str(parameter))
             print_avgEpochs = sys.argv[3] == "True"
