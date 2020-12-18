@@ -55,12 +55,12 @@ def plot_results(results,alpha,P,N):
     N_Alpha = []
     for i in range(0,len(N)):
         N_Alpha += alpha
-    data_unified = {'Probability of lin. Seperability':results,'N/P':N_Alpha, 'N':N_Group}
+    data_unified = {'Probability of lin. Seperability':results,'P/N':N_Alpha, 'N':N_Group}
     data = pd.DataFrame(data_unified)
     sns.set(font_scale=1.3)
     sns.set_style("darkgrid") # ticks or whitegrid darkgrid
     # palette options: flare mako_r Set2 Set1 Set3
-    sns.lineplot(data=data, x='N/P', y='Probability of lin. Seperability', hue = 'N',style='N',palette="Set1",hue_norm=col.LogNorm())
+    sns.lineplot(data=data, x='P/N', y='Probability of lin. Seperability', hue = 'N',style='N',palette="Set1",hue_norm=col.LogNorm())
     plt.show()
 
 def run_experiment(print_avgEpochs,*parameters):
