@@ -3,6 +3,9 @@ import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.colors as col
+import os
+
+
 
 def generate_data(N,P):
     data = np.random.normal(loc = 0,scale = 1,size= (N,P))
@@ -52,6 +55,8 @@ def histograms(values,p):
 
 
 def run_experiment():
+    if not os.path.exists('figures_2'):
+        os.makedirs('figures_2')
     # Need settings parameter again
     n = 100
     nD= 10 # number of experiments. min is 10 

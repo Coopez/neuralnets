@@ -2,7 +2,7 @@ Rosenblatt Perceptron & Learning a Linearly Separable Rule
 ====
 _made by: Sebastian Prehn and Niklas Erdmann_
 
-Note: This contains both the code for Assignment 1 and 2. While code for both is distinct, the readme is not.
+Note: This contains both the code for Assignment 1 and 2. While codefiles for both are distinct, the readme is not.
 
 **Package requirements:**
  - numpy
@@ -12,9 +12,9 @@ Note: This contains both the code for Assignment 1 and 2. While code for both is
  - sys
  - ast
 
+(assignment 2 doesn't require sys and ast, but both should be installed by default)
 
-
-**Assignment 1 Rosenblatt Perceptron:**
+## **Assignment 1 - Rosenblatt Perceptron:**
 
 Run the algorithm via running `python perceptron_training.py` followed by some input arguments which will determine the experiment set-up:
 
@@ -37,7 +37,9 @@ Here are some example configurations:
 passing no arguments but `run` will run the experiment in standard configuration: `[50,100,[10,20,100]]`
 
 
-**Assignment 2 Learning a Linearly Separable Rule:**
+## **Assignment 2 - Learning a Linearly Separable Rule:**
 
-This algorithm is less modular. It can be executed by simply running `python minOver.py` 
+This algorithm is less modular than in assignment 1. It can be executed by simply running `python minOver.py` 
+
+Figures created by this algorithm (histograms of stability distributions and generalization error vs p/n) are saved in the folder `figures_2` which is created (if it does not exist) in your working directory.
 
