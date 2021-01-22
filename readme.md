@@ -1,8 +1,20 @@
-Perceptron Training Algorithm
+Rosenblatt Perceptron & Learning a Linearly Separable Rule
 ====
 _made by: Sebastian Prehn and Niklas Erdmann_
 
+Note: This contains both the code for Assignment 1 and 2. While code for both is distinct, the readme is not.
 
+**Package requirements:**
+ - numpy
+ - matplotlib
+ - pandas
+ - seaborn
+ - sys
+ - ast
+
+
+
+**Assignment 1 Rosenblatt Perceptron:**
 
 Run the algorithm via running `python perceptron_training.py` followed by some input arguments which will determine the experiment set-up:
 
@@ -25,10 +37,7 @@ Here are some example configurations:
 passing no arguments but `run` will run the experiment in standard configuration: `[50,100,[10,20,100]]`
 
 
-**Package requirements:**
- - numpy
- - matplotlib
- - pandas
- - seaborn
- - sys
- - ast
+**Assignment 2 Learning a Linearly Separable Rule:**
+
+This algorithm is less modular. It can be executed by simply running `python minOver.py` 
+
