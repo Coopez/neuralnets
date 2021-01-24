@@ -13,19 +13,22 @@ def generate_data(N,P):
     labels = np.sign(np.dot(weights,data))
     return (data, weights, labels)
 
-def Minover(weights, data,N,labels):
-    old_stability = np.array([0 for i in range(0,np.shape(data)[1])])
-    stability = np.array([1 for i in range(0,np.shape(data)[1])])
-    
-    while np.sum((old_stability-stability)**2) >0.5:
+def Minover(weights, data,N,labels,T):
+    stability_queue = []
+    notStop = True
+    while notStop:
         Es = []
         for index in range(0,np.shape(data)[1]):
             E = np.dot(weights,data[:,index])*labels[0,index]
             Es.append(E)
         minE = np.argmin(Es)
         weights = weights + (data[:,minE]*labels[0,minE]/N)
-        old_stability=stability
         stability = np.array(Es)/np.linalg.norm(weights)
+        stability_queue.append(stability)
+        if len(stability_queue) > T:
+            stability_queue.pop(0)
+        if len(stability_queue)==T and np.sum((stability_queue[0]-stability_queue[-1])**2) < 0.5:
+            notStop = False
     return weights, stability  
 
 def GeneralizationError(weights, ideal_weights):
@@ -70,7 +73,7 @@ def run_experiment():
             (data, ideal_weights, labels) = generate_data(n,p)
             weights = np.ones(n)
             weights *= 10**(-10) 
-            weights, stability = Minover(weights,data,n,labels)
+            weights, stability = Minover(weights,data,n,labels,int(p/10))
             if p in [150,350,525,675]:
                 st_conc = np.concatenate((st_conc,stability), axis = 0)
             error = GeneralizationError(weights,ideal_weights)
